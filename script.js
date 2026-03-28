@@ -95,32 +95,43 @@ function startConfetti() {
     setTimeout(()=>{canvas.style.display="none";},5000);
 }
 
-// ------------------- MATRIX RAIN -------------------
-const matrixCanvas = document.getElementById("matrix");
-const mCtx = matrixCanvas.getContext("2d");
-matrixCanvas.width = window.innerWidth;
-matrixCanvas.height = window.innerHeight;
+// MATRIX INTRO
+function startMatrixIntro(duration = 2000) {
+    const matrixCanvas = document.getElementById("matrix");
+    const mCtx = matrixCanvas.getContext("2d");
+    matrixCanvas.width = window.innerWidth;
+    matrixCanvas.height = window.innerHeight;
 
-const letters = "01";
-const fontSize = 14;
-const columns = Math.floor(matrixCanvas.width / fontSize);
-const drops = Array(columns).fill(1);
+    const letters = "01";
+    const fontSize = 14;
+    const columns = Math.floor(matrixCanvas.width / fontSize);
+    const drops = Array(columns).fill(1);
 
-function drawMatrix() {
-    mCtx.fillStyle = "rgba(0,0,0,0.05)";
-    mCtx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);
+    function draw() {
+        mCtx.fillStyle = "rgba(0,0,0,0.05)";
+        mCtx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);
 
-    mCtx.fillStyle = "#0F0";
-    mCtx.font = fontSize + "px monospace";
+        mCtx.fillStyle = "#0F0";
+        mCtx.font = fontSize + "px monospace";
 
-    for(let i=0; i<drops.length; i++) {
-        const text = letters[Math.floor(Math.random()*letters.length)];
-        mCtx.fillText(text, i*fontSize, drops[i]*fontSize);
-        if(drops[i]*fontSize > matrixCanvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
+        for(let i=0; i<drops.length; i++) {
+            const text = letters[Math.floor(Math.random()*letters.length)];
+            mCtx.fillText(text, i*fontSize, drops[i]*fontSize);
+            if(drops[i]*fontSize > matrixCanvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
     }
 
-    requestAnimationFrame(drawMatrix);
+    const interval = setInterval(draw, 33);
+
+    setTimeout(() => {
+        clearInterval(interval);
+        matrixCanvas.style.display = "none";
+        showScreen("q0"); // show name input AFTER matrix intro
+    }, duration);
 }
 
-drawMatrix();
+// START MATRIX INTRO on page load
+window.onload = () => {
+    startMatrixIntro(2000); // 2 seconds
+};
