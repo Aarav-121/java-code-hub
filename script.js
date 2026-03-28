@@ -47,7 +47,7 @@ function submitForm(e){
         formData.append(key,data[key]);
     }
 
-    fetch("https://formspree.io/f/YOUR_FORM_ID", {
+    fetch(https://formspree.io/f/xkopglpj", {
         method: "POST",
         body: formData,
         headers: { 'Accept': 'application/json' }
