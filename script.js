@@ -46,24 +46,27 @@ function submitForm(e){
     for(const key in data){
         formData.append(key,data[key]);
     }
-fetch("https://formspree.io/f/xkopglpj", {
-    method: "POST",
-    body: formData,
-    headers: { 'Accept': 'application/json' }
-})
-.then(res=>{
-    if(res.ok){
-        showScreen("end");    // show thank you screen first
-        startConfetti();      // then play confetti
-    } else {
-        alert("Failed to submit. Try again.");
-    }
-})
-.catch(()=>{
-    alert("Failed to submit. Check internet connection.");
-});
+
+    fetch("https://formspree.io/f/YOUR_FORM_ID", {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+    })
+    .then(res=>{
+        if(res.ok){
+            showScreen("end");    // show thank you first
+            startConfetti();      // then play confetti
+        } else {
+            alert("Failed to submit. Try again.");
+        }
+    })
+    .catch(()=>{
+        alert("Failed to submit. Check internet connection.");
+    });
+}
+
 // MATRIX RAIN
-function startMatrixIntro(duration=2000){
+function startMatrixIntro(duration=3000){
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
@@ -96,7 +99,7 @@ function startMatrixIntro(duration=2000){
     }, duration);
 }
 
-// CONFETTI
+// CONFETTI EFFECT
 function startConfetti(){
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
@@ -104,9 +107,9 @@ function startConfetti(){
     canvas.height = window.innerHeight;
     canvas.style.display="block";
 
-    const pieces = Array.from({length:150}, ()=>({
+    const pieces = Array.from({length:200}, ()=>({
         x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height,
+        y: Math.random()*canvas.height - canvas.height,
         r: Math.random()*6+3,
         dx: (Math.random()-0.5)*2,
         dy: Math.random()*3+2
@@ -126,8 +129,9 @@ function startConfetti(){
         requestAnimationFrame(draw);
     }
     draw();
+
     setTimeout(()=>{canvas.style.display="none";},5000);
 }
 
-// START MATRIX ON LOAD
+// START MATRIX ON PAGE LOAD
 window.onload = ()=>{ startMatrixIntro(3000); }
