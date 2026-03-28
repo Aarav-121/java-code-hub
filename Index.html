@@ -13,31 +13,35 @@
 
     <div class="header">💬 Fun Chat</div>
 
-    <!-- START SCREEN -->
+    <!-- START -->
     <div class="screen active" id="start">
-        <h2>Nothing will be saved at first 😄</h2>
-        <p>All answers are just for fun.</p>
-        <button onclick="startMatrixIntro()">Start</button>
+        <h2>Just for fun 😄</h2>
+        <!-- BUTTON NOW USES onclick that exists -->
+        <button id="startBtn">Start</button>
     </div>
 
-    <!-- QUESTION 1 -->
+    <!-- QUESTIONS FLOW -->
     <div class="screen" id="q1">
         <h2>Do you think I am cute?</h2>
-        <button onclick="saveAns('cute','Yes','q2')">Yes</button>
-        <button onclick="saveAns('cute','No','q2')">No</button>
+        <button onclick="nextQ('q2')">Yes</button>
+        <button onclick="nextQ('q2')">No</button>
     </div>
 
-    <!-- QUESTION 2 -->
     <div class="screen" id="q2">
         <h2>Do you enjoy talking to me?</h2>
         <button onclick="saveAns('talk','Yes','q3')">Yes</button>
         <button onclick="saveAns('talk','No','q3')">No</button>
     </div>
 
-    <!-- QUESTION 3 -->
     <div class="screen" id="q3">
         <h2>What am I to you?</h2>
-        <input id="relation" list="suggestions" placeholder="Choose or type..." required>
+        <input 
+            id="relation" 
+            list="suggestions" 
+            name="relation" 
+            placeholder="Choose or type..." 
+            required
+        >
         <datalist id="suggestions">
             <option value="Friend">
             <option value="Best Friend">
@@ -48,17 +52,15 @@
             <option value="Family">
             <option value="Just Someone">
         </datalist>
-        <button type="button" onclick="saveInput('relation','q4')">Next</button>
+        <button type="button" id="q3Next">Next</button>
     </div>
 
-    <!-- QUESTION 4 -->
     <div class="screen" id="q4">
         <h2>Do I make your day better?</h2>
         <button onclick="saveAns('day','Yes','q5')">Yes</button>
         <button onclick="saveAns('day','No','q5')">No</button>
     </div>
 
-    <!-- QUESTION 5 -->
     <div class="screen" id="q5">
         <h2>What do you expect from me?</h2>
         <label><input type="checkbox" value="Love"> Love</label>
@@ -70,20 +72,26 @@
         <button onclick="submitData()">Submit</button>
     </div>
 
-    <!-- END SCREEN -->
+    <!-- THANK YOU -->
     <div class="screen" id="end">
         <h2>💖 Thanks for playing!</h2>
-        <p>Nothing entered was stored, it was just for fun.</p>
+        <p>Just for fun 😄</p>
     </div>
 
 </div>
 
-<!-- MATRIX CANVAS -->
 <canvas id="matrix"></canvas>
-
-<!-- CONFETTI CANVAS -->
 <canvas id="confetti"></canvas>
 
+<!-- SCRIPT AT THE BOTTOM -->
 <script src="script.js"></script>
+<script>
+    // Attach Start button AFTER script is loaded
+    document.getElementById("startBtn").addEventListener("click", startMatrixIntro);
+    document.getElementById("q3Next").addEventListener("click", function(){
+        saveInput('relation','q4');
+    });
+</script>
+
 </body>
 </html>
