@@ -7,6 +7,13 @@ function showScreen(id) {
     document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
 }
+function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    const screen = document.getElementById(id);
+    screen.classList.add("active");
+    // Scroll to top on mobile so the question is visible
+    window.scrollTo(0,0);
+}
 
 // NEXT QUESTION (yes/no)
 function nextQ(next) {
