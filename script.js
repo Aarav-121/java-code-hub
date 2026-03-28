@@ -9,7 +9,7 @@ function showScreen(id) {
 // MATRIX INTRO BEFORE FIRST QUESTION
 function startMatrixIntro() {
     document.getElementById("start").classList.remove("active");
-
+document.getElementById("startBtn").addEventListener("click", startMatrixIntro);
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
 
@@ -45,7 +45,7 @@ function startMatrixIntro() {
         showScreen("q1"); // show first question
     }, 3000);
 }
-document.getElementById("startBtn").addEventListener("click", startMatrixIntro);
+
 // SAVE INPUT FIELD
 function saveInput(id, next) {
     let value = document.getElementById(id).value.trim();
