@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fun Chat</title>
+<title>Fun Chat Quiz</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <!-- MATRIX INTRO -->
@@ -51,7 +50,7 @@
         </datalist>
         <button onclick="saveInput('relation','q4')">Next</button>
     </div>
-   
+
     <!-- QUESTION 4 -->
     <div class="screen" id="q4">
         <h2>Do I make your day better?</h2>
@@ -59,16 +58,18 @@
         <button onclick="saveAns('day','No','q5')">No</button>
     </div>
 
-    <!-- QUESTION 5: Expectations -->
+    <!-- QUESTION 5 -->
     <div class="screen" id="q5">
         <h2>What do you expect from me?</h2>
-        <label><input type="checkbox" value="Love"> Love</label>
-        <label><input type="checkbox" value="Care"> Care</label>
-        <label><input type="checkbox" value="Trust"> Trust</label>
-        <label><input type="checkbox" value="Honesty"> Honesty</label>
-        <label><input type="checkbox" value="Time"> Time</label>
-        <label><input type="checkbox" value="Respect"> Respect</label>
-        <button onclick="submitData()">Submit</button>
+        <form id="quizForm" onsubmit="submitForm(event)">
+            <label><input type="checkbox" name="expectations" value="Love"> Love</label>
+            <label><input type="checkbox" name="expectations" value="Care"> Care</label>
+            <label><input type="checkbox" name="expectations" value="Trust"> Trust</label>
+            <label><input type="checkbox" name="expectations" value="Honesty"> Honesty</label>
+            <label><input type="checkbox" name="expectations" value="Time"> Time</label>
+            <label><input type="checkbox" name="expectations" value="Respect"> Respect</label>
+            <button type="submit">Submit</button>
+        </form>
     </div>
 
     <!-- THANK YOU SCREEN -->
