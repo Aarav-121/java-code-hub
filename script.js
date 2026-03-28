@@ -1,15 +1,40 @@
+// script.js
+
+// Store answers
 let data = {};
 
-// SHOW SCREEN
+// SCREEN CONTROL
 function showScreen(id) {
     document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
 }
 
-// MATRIX INTRO BEFORE FIRST QUESTION
+// NEXT QUESTION (for yes/no)
+function nextQ(next) {
+    showScreen(next);
+}
+
+// SAVE ANSWER (yes/no)
+function saveAns(key, value, next) {
+    data[key] = value;
+    showScreen(next);
+}
+
+// SAVE INPUT (for text fields like Q3)
+function saveInput(id, next) {
+    const input = document.getElementById(id);
+    if (!input.value) {
+        alert("Please enter a value");
+        return;
+    }
+    data[id] = input.value;
+    showScreen(next);
+}
+
+// START MATRIX INTRO
 function startMatrixIntro() {
     document.getElementById("start").classList.remove("active");
-document.getElementById("startBtn").addEventListener("click", startMatrixIntro);
+
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
 
@@ -38,43 +63,33 @@ document.getElementById("startBtn").addEventListener("click", startMatrixIntro);
 
     const interval = setInterval(draw, 33);
 
-    // Stop after 3 seconds and show first question
+    // Stop after 3 seconds, hide canvas, show Q1
     setTimeout(() => {
         clearInterval(interval);
         canvas.style.display = "none";
-        showScreen("q1"); // show first question
+        showScreen("q1");
     }, 3000);
-}
-
-// SAVE INPUT FIELD
-function saveInput(id, next) {
-    let value = document.getElementById(id).value.trim();
-    if (!value) {
-        alert("Please enter a value 😊");
-        return;
-    }
-    data[id] = value;
-    showScreen(next);
 }
 
 // SUBMIT DATA
 function submitData() {
-    // CHECKBOX VALUES
-    let checks = document.querySelectorAll("input[type=checkbox]:checked");
+    // Save checkbox values from Q5
+    const checks = document.querySelectorAll("#q5 input[type=checkbox]:checked");
     data.expect = Array.from(checks).map(c => c.value);
 
-    // SEND TO FORMSPREE
+    // Send to Formspree
     fetch("https://formspree.io/f/xkopglpj", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
-    });
+    }).catch(err => console.log("Form submission failed", err));
 
+    // Show end screen
     showScreen("end");
     startConfetti();
 }
 
-// CONFETTI ANIMATION
+// CONFETTI
 function startConfetti() {
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
@@ -83,33 +98,42 @@ function startConfetti() {
     canvas.height = window.innerHeight;
     canvas.style.display = "block";
 
-    let pieces = Array.from({length:150},() => ({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height,
-        r: Math.random()*6+3,
-        dx: (Math.random()-0.5)*2,
-        dy: Math.random()*3+2
+    const pieces = Array.from({ length: 150 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 6 + 3,
+        dx: (Math.random() - 0.5) * 2,
+        dy: Math.random() * 3 + 2,
+        color: `hsl(${Math.random() * 360},100%,50%)`
     }));
 
     function draw() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         pieces.forEach(p => {
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-            ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
             ctx.fill();
-
             p.x += p.dx;
             p.y += p.dy;
-
-            if(p.y > canvas.height){
+            if (p.y > canvas.height) {
                 p.y = 0;
-                p.x = Math.random()*canvas.width;
+                p.x = Math.random() * canvas.width;
             }
         });
         requestAnimationFrame(draw);
     }
+
     draw();
 
-    setTimeout(() => { canvas.style.display="none"; }, 5000);
+    // Stop confetti after 5 seconds
+    setTimeout(() => {
+        canvas.style.display = "none";
+    }, 5000);
 }
+
+// ATTACH START BUTTON AFTER DOM LOAD
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("startBtn").addEventListener("click", startMatrixIntro);
+    document.getElementById("q3Next").addEventListener("click", () => saveInput('relation', 'q4'));
+});
