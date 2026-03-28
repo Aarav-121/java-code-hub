@@ -1,98 +1,46 @@
-// script.js
+let data = {}; // store all answers
 
-let data = {};
-
-// SCREEN CONTROL
+// ------------------- SCREEN CONTROL -------------------
 function showScreen(id) {
     document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
-}
-function showScreen(id) {
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-    const screen = document.getElementById(id);
-    screen.classList.add("active");
-    // Scroll to top on mobile so the question is visible
-    window.scrollTo(0,0);
+    window.scrollTo(0,0); // mobile fix
 }
 
-// NEXT QUESTION (yes/no)
 function nextQ(next) {
     showScreen(next);
-    // Save name and move to first question
+}
+
+function saveAns(key, value, next) {
+    data[key] = value;
+    showScreen(next);
+}
+
+// ------------------- NAME INPUT -------------------
 document.getElementById("q0Next").addEventListener("click", () => {
     const nameInput = document.getElementById("username");
     if (!nameInput.value.trim()) {
         alert("Please enter your name");
         return;
     }
-    data.name = nameInput.value.trim();  // save in data object
-    showScreen("q1");  // move to the first question
+    data.name = nameInput.value.trim();
+    showScreen("q1");
 });
-}
 
-// SAVE ANSWER (yes/no)
-function saveAns(key, value, next) {
-    data[key] = value;
-    showScreen(next);
-}
-
-// SAVE INPUT (for Q3)
-function saveInput(id, next) {
-    const input = document.getElementById(id);
-    if (!input.value) {
-        alert("Please enter a value");
+// ------------------- RELATION INPUT -------------------
+document.getElementById("q3Next").addEventListener("click", () => {
+    const rel = document.getElementById("relation").value.trim();
+    if (!rel) {
+        alert("Please enter or select a relation");
         return;
     }
-    data[id] = input.value;
-    showScreen(next);
-}
+    data.relation = rel;
+    showScreen("q4");
+});
 
-// MATRIX RAIN INTRO
-function startMatrixIntro() {
-    document.getElementById("start").classList.remove("active");
-
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas.style.display = "block";
-
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%".split("");
-    const fontSize = 16;
-    const columns = Math.floor(canvas.width / fontSize);
-    const drops = Array(columns).fill(1);
-
-    function draw() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = "#0F0";
-        ctx.font = fontSize + "px monospace";
-
-        for (let i = 0; i < drops.length; i++) {
-            const text = letters[Math.floor(Math.random() * letters.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                drops[i] = 0;
-            }
-            drops[i]++;
-        }
-    }
-
-    const interval = setInterval(draw, 33);
-
-    setTimeout(() => {
-        clearInterval(interval);
-        canvas.style.display = "none";
-        showScreen("q0");
-    }, 3000);
-}
-
-// SUBMIT DATA
+// ------------------- SUBMIT -------------------
 function submitData() {
-    const checks = document.querySelectorAll("#q5 input[type=checkbox]:checked");
+    let checks = document.querySelectorAll("input[type=checkbox]:checked");
     data.expect = Array.from(checks).map(c => c.value);
 
     // Send to Formspree
@@ -100,13 +48,13 @@ function submitData() {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
-    }).catch(err => console.log("Form submission failed", err));
+    });
 
     showScreen("end");
     startConfetti();
 }
 
-// CONFETTI
+// ------------------- CONFETTI -------------------
 function startConfetti() {
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
@@ -115,27 +63,28 @@ function startConfetti() {
     canvas.height = window.innerHeight;
     canvas.style.display = "block";
 
-    const pieces = Array.from({ length: 150 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 6 + 3,
-        dx: (Math.random() - 0.5) * 2,
-        dy: Math.random() * 3 + 2,
-        color: `hsl(${Math.random() * 360},100%,50%)`
+    let pieces = Array.from({length:150},() => ({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        r: Math.random()*6+3,
+        dx: (Math.random()-0.5)*2,
+        dy: Math.random()*3+2
     }));
 
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
         pieces.forEach(p => {
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = p.color;
+            ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+            ctx.fillStyle=`hsl(${Math.random()*360},100%,50%)`;
             ctx.fill();
+
             p.x += p.dx;
             p.y += p.dy;
-            if (p.y > canvas.height) {
+
+            if(p.y > canvas.height) {
                 p.y = 0;
-                p.x = Math.random() * canvas.width;
+                p.x = Math.random()*canvas.width;
             }
         });
         requestAnimationFrame(draw);
@@ -143,11 +92,35 @@ function startConfetti() {
 
     draw();
 
-    setTimeout(() => { canvas.style.display = "none"; }, 5000);
+    setTimeout(()=>{canvas.style.display="none";},5000);
 }
 
-// ATTACH BUTTONS AFTER DOM LOAD
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("startBtn").addEventListener("click", startMatrixIntro);
-    document.getElementById("q3Next").addEventListener("click", () => saveInput('relation','q4'));
-});
+// ------------------- MATRIX RAIN -------------------
+const matrixCanvas = document.getElementById("matrix");
+const mCtx = matrixCanvas.getContext("2d");
+matrixCanvas.width = window.innerWidth;
+matrixCanvas.height = window.innerHeight;
+
+const letters = "01";
+const fontSize = 14;
+const columns = Math.floor(matrixCanvas.width / fontSize);
+const drops = Array(columns).fill(1);
+
+function drawMatrix() {
+    mCtx.fillStyle = "rgba(0,0,0,0.05)";
+    mCtx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);
+
+    mCtx.fillStyle = "#0F0";
+    mCtx.font = fontSize + "px monospace";
+
+    for(let i=0; i<drops.length; i++) {
+        const text = letters[Math.floor(Math.random()*letters.length)];
+        mCtx.fillText(text, i*fontSize, drops[i]*fontSize);
+        if(drops[i]*fontSize > matrixCanvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+    }
+
+    requestAnimationFrame(drawMatrix);
+}
+
+drawMatrix();
