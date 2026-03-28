@@ -20,7 +20,9 @@ function saveAns(key, value, next) {
 // SAVE INPUT
 function saveInput(id, next) {
     data[id] = document.getElementById(id).value;
+    data[id]=value;
     showScreen(next);
+    
 }
 
 // SUBMIT
