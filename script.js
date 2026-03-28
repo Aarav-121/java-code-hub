@@ -18,6 +18,16 @@ function showScreen(id) {
 // NEXT QUESTION (yes/no)
 function nextQ(next) {
     showScreen(next);
+    // Save name and move to first question
+document.getElementById("q0Next").addEventListener("click", () => {
+    const nameInput = document.getElementById("username");
+    if (!nameInput.value.trim()) {
+        alert("Please enter your name");
+        return;
+    }
+    data.name = nameInput.value.trim();  // save in data object
+    showScreen("q1");  // move to the first question
+});
 }
 
 // SAVE ANSWER (yes/no)
@@ -76,7 +86,7 @@ function startMatrixIntro() {
     setTimeout(() => {
         clearInterval(interval);
         canvas.style.display = "none";
-        showScreen("q1");
+        showScreen("q0");
     }, 3000);
 }
 
