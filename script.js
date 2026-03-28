@@ -46,25 +46,22 @@ function submitForm(e){
     for(const key in data){
         formData.append(key,data[key]);
     }
-
-    fetch(https://formspree.io/f/xkopglpj", {
-        method: "POST",
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-    })
-    .then(res=>{
-        if(res.ok){
-            startConfetti();       // show confetti first
-            setTimeout(()=>{       // then show thank you screen after 0.5s
-                showScreen("end");
-            }, 500);
-        } else {
-            alert("Failed to submit. Try again.");
-        }
-    })
-    .catch(()=>alert("Failed to submit. Check internet connection."));
-}
-
+fetch("https://formspree.io/f/xkopglpj", {
+    method: "POST",
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+})
+.then(res=>{
+    if(res.ok){
+        showScreen("end");    // show thank you screen first
+        startConfetti();      // then play confetti
+    } else {
+        alert("Failed to submit. Try again.");
+    }
+})
+.catch(()=>{
+    alert("Failed to submit. Check internet connection.");
+});
 // MATRIX RAIN
 function startMatrixIntro(duration=2000){
     const canvas = document.getElementById("matrix");
