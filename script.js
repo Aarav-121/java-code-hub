@@ -33,18 +33,16 @@ function saveInput(id, next){
     data[id] = val;
     showScreen(next);
 }
-// Function to submit checkbox selections
 function submitData() {
     const checkboxes = document.querySelectorAll('#q5 input[type="checkbox"]');
     const selected = [];
     checkboxes.forEach(cb => {
         if (cb.checked) selected.push(cb.value);
     });
-    answers.expectations = selected;
+    data.expectations = selected; // <-- use data, not answers
 
-    console.log("All answers:", answers); // You can replace this with sending data to a server
+    console.log("All answers:", data); // now logs correctly
     showScreen('end');
-}
 
 // MATRIX INTRO
 function startMatrixIntro(duration=2000){
