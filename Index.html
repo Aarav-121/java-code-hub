@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fun Chat</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">💬 Fun Chat</div>
+
+    <!-- START -->
+    <div class="screen active" id="start">
+        <h2>Just for fun 😄</h2>
+        <button onclick="showScreen('q1')">Start</button>
+    </div>
+
+    <!-- QUESTIONS FLOW -->
+    <div class="screen" id="q1">
+        <h2>Do you think I am cute?</h2>
+        <button onclick="nextQ('q2')">Yes</button>
+        <button onclick="nextQ('q2')">No</button>
+    </div>
+
+    <div class="screen" id="q2">
+        <h2>Do you enjoy talking to me?</h2>
+        <button onclick="saveAns('talk','Yes','q3')">Yes</button>
+        <button onclick="saveAns('talk','No','q3')">No</button>
+    </div>
+
+    <div class="screen" id="q3">
+        <h2>What am I to you?</h2>
+        <input id="relation">
+        <button onclick="saveInput('relation','q4')">Next</button>
+    </div>
+
+    <div class="screen" id="q4">
+        <h2>Do I make your day better?</h2>
+        <button onclick="saveAns('day','Yes','q5')">Yes</button>
+        <button onclick="saveAns('day','No','q5')">No</button>
+    </div>
+
+    <div class="screen" id="q5">
+        <h2>What do you expect from me?</h2>
+        <label><input type="checkbox" value="Love"> Love</label>
+        <label><input type="checkbox" value="Care"> Care</label>
+        <label><input type="checkbox" value="Trust"> Trust</label>
+        <button onclick="submitData()">Submit</button>
+    </div>
+
+    <!-- THANK YOU -->
+    <div class="screen" id="end">
+        <h2>💖 Thanks for playing!</h2>
+        <p>Just for fun 😄</p>
+    </div>
+
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script src="script.js"></script>
+</body>
+</html>
