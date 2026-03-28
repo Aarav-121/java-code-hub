@@ -34,7 +34,7 @@ function saveInput(id,next){
     showScreen(next);
 }
 
-// SUBMIT FORM DATA TO FORMSPREE
+// SUBMIT FORM DATA TO FORMSPREE AND SHOW THANK YOU WITH CONFETTI
 function submitForm(e){
     e.preventDefault();
     const form = e.target;
@@ -42,22 +42,22 @@ function submitForm(e){
     const expectations = Array.from(checkboxes).map(cb => cb.value);
     data.expectations = expectations;
 
-    // create FormData for Formspree
     const formData = new FormData();
     for(const key in data){
-        formData.append(key, data[key]);
+        formData.append(key,data[key]);
     }
 
-    // REPLACE THIS URL WITH YOUR OWN FORMSPREE URL
     fetch("https://formspree.io/f/YOUR_FORM_ID", {
         method: "POST",
         body: formData,
         headers: { 'Accept': 'application/json' }
     })
-    .then(response => {
-        if(response.ok){
-            showScreen("end");
-            startConfetti();
+    .then(res=>{
+        if(res.ok){
+            startConfetti();       // show confetti first
+            setTimeout(()=>{       // then show thank you screen after 0.5s
+                showScreen("end");
+            }, 500);
         } else {
             alert("Failed to submit. Try again.");
         }
@@ -71,7 +71,7 @@ function startMatrixIntro(duration=2000){
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    canvas.style.display = "block";
+    canvas.style.display="block";
 
     const letters = "01";
     const fontSize = 14;
@@ -99,13 +99,13 @@ function startMatrixIntro(duration=2000){
     }, duration);
 }
 
-// CONFETTI EFFECT
+// CONFETTI
 function startConfetti(){
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    canvas.style.display = "block";
+    canvas.style.display="block";
 
     const pieces = Array.from({length:150}, ()=>({
         x: Math.random()*canvas.width,
@@ -133,6 +133,4 @@ function startConfetti(){
 }
 
 // START MATRIX ON LOAD
-window.onload = ()=>{
-    startMatrixIntro(3000);
-}
+window.onload = ()=>{ startMatrixIntro(3000); }
