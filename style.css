@@ -1,20 +1,19 @@
 /* BODY */
 body {
     margin: 0;
-    background: #000; /* PURE BLACK */
+    background: #000;
     color: white;
     font-family: Arial, sans-serif;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
-/* APP CONTAINER */
+/* APP */
 .app {
     max-width: 400px;
     margin: auto;
     height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
 }
 
 /* HEADER */
@@ -23,10 +22,9 @@ body {
     padding: 15px;
     border-bottom: 1px solid #222;
     font-size: 20px;
-    font-weight: bold;
 }
 
-/* SCREEN */
+/* SCREENS */
 .screen {
     display: none;
     flex: 1;
@@ -35,7 +33,6 @@ body {
     flex-direction: column;
     text-align: center;
     padding: 20px;
-    animation: fadeIn 0.4s ease-in;
 }
 
 .screen.active {
@@ -44,43 +41,35 @@ body {
 
 /* BUTTONS */
 button {
-    margin: 10px 5px;
-    padding: 12px 25px;
-    border-radius: 12px;
+    margin: 10px;
+    padding: 12px 20px;
+    border-radius: 10px;
     border: none;
     background: #00ffcc;
     color: black;
     font-size: 16px;
     cursor: pointer;
-    transition: 0.2s;
 }
 
-button:hover {
-    transform: scale(1.05);
-    background: #00e6b8;
-}
-
-/* INPUT FIELDS */
+/* INPUT */
 input {
-    padding: 12px 10px;
+    padding: 10px;
     border-radius: 8px;
     border: none;
-    margin: 15px auto;
+    margin: 10px auto;
     width: 80%;
     max-width: 300px;
     display: block;
-    font-size: 16px;
 }
 
 /* CHECKBOXES */
 label {
     display: block;
-    margin: 8px 0;
-    font-size: 16px;
+    margin: 5px 0;
 }
 
-/* CONFETTI */
-#confetti {
+/* MATRIX & CONFETTI CANVAS */
+#matrix, #confetti {
     position: fixed;
     top:0;
     left:0;
@@ -88,26 +77,5 @@ label {
     height:100%;
     pointer-events:none;
     display:none;
-}
-
-/* ANIMATIONS */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px);}
-    to { opacity: 1; transform: translateY(0);}
-}
-
-/* MOBILE RESPONSIVENESS */
-@media(max-width: 450px){
-    .app {
-        width: 95%;
-    }
-
-    button {
-        width: 90%;
-        font-size: 15px;
-    }
-
-    input {
-        width: 90%;
-    }
+    z-index: 1000;
 }
