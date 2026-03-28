@@ -32,10 +32,17 @@
         <button onclick="saveAns('talk','No','q3')">No</button>
     </div>
 
-    <div class="screen" id="q3">
-        <h2>What am I to you?</h2>
-        
-        <input list="suggestions" name="relation" placeholder="Choose or type..." required>
+<div class="screen" id="q3">
+    <h2>What am I to you?</h2>
+    
+    <input 
+        id="relation" 
+        list="suggestions" 
+        name="relation" 
+        placeholder="Choose or type..." 
+        required
+    >
+
     <datalist id="suggestions">
         <option value="Friend">
         <option value="Best Friend">
@@ -46,9 +53,9 @@
         <option value="Family">
         <option value="Just Someone">
     </datalist>
-        <button onclick="saveInput('relation','q4')">Next</button>
-        
-    </div>
+
+    <button onclick="saveInput('relation','q4')">Next</button>
+</div>
 
     <div class="screen" id="q4">
         <h2>Do I make your day better?</h2>
