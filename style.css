@@ -11,9 +11,58 @@ body {
 .app {
     max-width: 400px;
     margin: auto;
-    height: 100vh;
+    min-height: 100vh;  /* ensures full screen on mobile */
     display: flex;
     flex-direction: column;
+    justify-content: flex-start; /* avoid stretching issues */
+}
+
+/* SCREENS */
+.screen {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    min-height: 100vh;  /* ensures each question fills the screen */
+    box-sizing: border-box;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* BUTTONS */
+button {
+    margin: 10px auto;
+    padding: 14px 20px;
+    border-radius: 10px;
+    border: none;
+    background: #00ffcc;
+    color: black;
+    font-size: 16px;
+    width: 80%;
+    max-width: 300px;
+    cursor: pointer;
+}
+
+/* INPUT */
+input {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    margin: 10px auto;
+    width: 80%;
+    max-width: 300px;
+    display: block;
+}
+
+/* allow scrolling if content overflows (mobile) */
+body, html {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
 }
 
 /* HEADER */
@@ -24,43 +73,6 @@ body {
     font-size: 20px;
 }
 
-/* SCREENS */
-.screen {
-    display: none;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 20px;
-}
-
-.screen.active {
-    display: flex;
-}
-
-/* BUTTONS */
-button {
-    margin: 10px;
-    padding: 12px 20px;
-    border-radius: 10px;
-    border: none;
-    background: #00ffcc;
-    color: black;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-/* INPUT */
-input {
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    margin: 10px auto;
-    width: 80%;
-    max-width: 300px;
-    display: block;
-}
 
 /* CHECKBOXES */
 label {
