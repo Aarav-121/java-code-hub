@@ -117,3 +117,12 @@ function startConfetti(){
 window.onload = () => {
     startMatrixIntro(3000); // 5 sec intro
 }
+    function submitData() {
+    const checkboxes = document.querySelectorAll('#q5 input[type="checkbox"]');
+    const selected = [];
+    checkboxes.forEach(cb => {
+        if (cb.checked) selected.push(cb.value);
+    });
+    data.expectations = selected; // Use your global data object
+    console.log("All answers:", data);
+    showScreen('end');
