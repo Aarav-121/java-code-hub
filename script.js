@@ -2,7 +2,7 @@ let data = {};
 
 // SHOW SCREEN
 function showScreen(id){
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
 }
 
@@ -17,14 +17,14 @@ function saveName() {
     showScreen("q1");
 }
 
-// SAVE ANSWER BUTTON
-function saveAns(key, value, next){
+// SAVE BUTTON ANSWERS
+function saveAns(key,value,next){
     data[key] = value;
     showScreen(next);
 }
 
 // SAVE INPUT FIELD
-function saveInput(id, next){
+function saveInput(id,next){
     const val = document.getElementById(id).value.trim();
     if(!val){
         alert("Please fill this field");
@@ -34,21 +34,38 @@ function saveInput(id, next){
     showScreen(next);
 }
 
-// SUBMIT DATA
-function submitData() {
-    const checkboxes = document.querySelectorAll('#q5 input[type="checkbox"]');
-    const selected = [];
-    checkboxes.forEach(cb => {
-        if(cb.checked) selected.push(cb.value);
-    });
-    data.expectations = selected;
+// SUBMIT FORM DATA TO FORMSPREE
+function submitForm(e){
+    e.preventDefault();
+    const form = e.target;
+    const checkboxes = form.querySelectorAll('input[name="expectations"]:checked');
+    const expectations = Array.from(checkboxes).map(cb => cb.value);
+    data.expectations = expectations;
 
-    console.log("All answers:", data);
-    showScreen('end');
-    startConfetti();
+    // create FormData for Formspree
+    const formData = new FormData();
+    for(const key in data){
+        formData.append(key, data[key]);
+    }
+
+    // REPLACE THIS URL WITH YOUR OWN FORMSPREE URL
+    fetch("https://formspree.io/f/YOUR_FORM_ID", {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+    })
+    .then(response => {
+        if(response.ok){
+            showScreen("end");
+            startConfetti();
+        } else {
+            alert("Failed to submit. Try again.");
+        }
+    })
+    .catch(()=>alert("Failed to submit. Check internet connection."));
 }
 
-// MATRIX INTRO
+// MATRIX RAIN
 function startMatrixIntro(duration=2000){
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
@@ -77,12 +94,12 @@ function startMatrixIntro(duration=2000){
 
     setTimeout(()=>{
         clearInterval(interval);
-        canvas.style.display = "none";
+        canvas.style.display="none";
         showScreen("q0");
     }, duration);
 }
 
-// CONFETTI
+// CONFETTI EFFECT
 function startConfetti(){
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
@@ -90,7 +107,7 @@ function startConfetti(){
     canvas.height = window.innerHeight;
     canvas.style.display = "block";
 
-    const pieces = Array.from({length:150}, () => ({
+    const pieces = Array.from({length:150}, ()=>({
         x: Math.random()*canvas.width,
         y: Math.random()*canvas.height,
         r: Math.random()*6+3,
@@ -100,23 +117,22 @@ function startConfetti(){
 
     function draw(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        pieces.forEach(p => {
+        pieces.forEach(p=>{
             ctx.beginPath();
             ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
             ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
             ctx.fill();
-            p.x += p.dx;
-            p.y += p.dy;
-            if(p.y > canvas.height){ p.y = 0; p.x = Math.random()*canvas.width; }
+            p.x+=p.dx;
+            p.y+=p.dy;
+            if(p.y>canvas.height){ p.y=0; p.x=Math.random()*canvas.width; }
         });
         requestAnimationFrame(draw);
     }
     draw();
-
     setTimeout(()=>{canvas.style.display="none";},5000);
 }
 
 // START MATRIX ON LOAD
-window.onload = () => {
+window.onload = ()=>{
     startMatrixIntro(3000);
 }
