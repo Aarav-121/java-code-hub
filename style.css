@@ -1,3 +1,4 @@
+/* BODY */
 body {
     margin: 0;
     background: #000; /* PURE BLACK */
@@ -19,6 +20,7 @@ body {
     text-align: center;
     padding: 15px;
     border-bottom: 1px solid #222;
+    font-size: 20px;
 }
 
 /* SCREEN */
@@ -36,15 +38,16 @@ body {
     display: flex;
 }
 
-/* BUTTON */
+/* BUTTONS */
 button {
-    margin: 8px;
+    margin: 10px;
     padding: 12px 20px;
     border-radius: 10px;
     border: none;
     background: #00ffcc;
     color: black;
     font-size: 16px;
+    cursor: pointer;
 }
 
 /* INPUT */
@@ -52,7 +55,16 @@ input {
     padding: 10px;
     border-radius: 8px;
     border: none;
-    margin: 10px;
+    margin: 10px auto;
+    width: 80%;
+    max-width: 300px;
+    display: block;
+}
+
+/* CHECKBOXES */
+label {
+    display: block;
+    margin: 5px 0;
 }
 
 /* CONFETTI */
@@ -64,15 +76,4 @@ input {
     height:100%;
     pointer-events:none;
     display:none;
-}
-.screen input, 
-.screen button {
-    display: block;
-    width: 80%;
-    max-width: 300px;
-    margin: 10px auto;
-}
-
-.screen h2 {
-    margin-bottom: 20px;
 }
