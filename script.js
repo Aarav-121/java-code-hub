@@ -1,6 +1,5 @@
 // script.js
 
-// Store answers
 let data = {};
 
 // SCREEN CONTROL
@@ -9,7 +8,7 @@ function showScreen(id) {
     document.getElementById(id).classList.add("active");
 }
 
-// NEXT QUESTION (for yes/no)
+// NEXT QUESTION (yes/no)
 function nextQ(next) {
     showScreen(next);
 }
@@ -20,7 +19,7 @@ function saveAns(key, value, next) {
     showScreen(next);
 }
 
-// SAVE INPUT (for text fields like Q3)
+// SAVE INPUT (for Q3)
 function saveInput(id, next) {
     const input = document.getElementById(id);
     if (!input.value) {
@@ -31,7 +30,7 @@ function saveInput(id, next) {
     showScreen(next);
 }
 
-// START MATRIX INTRO
+// MATRIX RAIN INTRO
 function startMatrixIntro() {
     document.getElementById("start").classList.remove("active");
 
@@ -48,11 +47,10 @@ function startMatrixIntro() {
     const drops = Array(columns).fill(1);
 
     function draw() {
-        // Semi-transparent background to create trail effect
         ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = "#0F0"; // green
+        ctx.fillStyle = "#0F0";
         ctx.font = fontSize + "px monospace";
 
         for (let i = 0; i < drops.length; i++) {
@@ -66,9 +64,8 @@ function startMatrixIntro() {
         }
     }
 
-    const interval = setInterval(draw, 33); // ~30fps
+    const interval = setInterval(draw, 33);
 
-    // Stop after 3 seconds and show first question
     setTimeout(() => {
         clearInterval(interval);
         canvas.style.display = "none";
@@ -78,7 +75,6 @@ function startMatrixIntro() {
 
 // SUBMIT DATA
 function submitData() {
-    // Save checkbox values from Q5
     const checks = document.querySelectorAll("#q5 input[type=checkbox]:checked");
     data.expect = Array.from(checks).map(c => c.value);
 
@@ -89,7 +85,6 @@ function submitData() {
         body: JSON.stringify(data)
     }).catch(err => console.log("Form submission failed", err));
 
-    // Show end screen
     showScreen("end");
     startConfetti();
 }
@@ -131,14 +126,11 @@ function startConfetti() {
 
     draw();
 
-    // Stop confetti after 5 seconds
-    setTimeout(() => {
-        canvas.style.display = "none";
-    }, 5000);
+    setTimeout(() => { canvas.style.display = "none"; }, 5000);
 }
 
-// ATTACH START BUTTON AFTER DOM LOAD
+// ATTACH BUTTONS AFTER DOM LOAD
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("startBtn").addEventListener("click", startMatrixIntro);
-    document.getElementById("q3Next").addEventListener("click", () => saveInput('relation', 'q4'));
+    document.getElementById("q3Next").addEventListener("click", () => saveInput('relation','q4'));
 });
