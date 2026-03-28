@@ -42,28 +42,33 @@ function startMatrixIntro() {
     canvas.height = window.innerHeight;
     canvas.style.display = "block";
 
-    const letters = "01".split("");
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%".split("");
     const fontSize = 16;
     const columns = Math.floor(canvas.width / fontSize);
     const drops = Array(columns).fill(1);
 
     function draw() {
-        ctx.fillStyle = "rgba(0,0,0,0.05)";
+        // Semi-transparent background to create trail effect
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#0F0";
+
+        ctx.fillStyle = "#0F0"; // green
         ctx.font = fontSize + "px monospace";
 
         for (let i = 0; i < drops.length; i++) {
             const text = letters[Math.floor(Math.random() * letters.length)];
             ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
             drops[i]++;
         }
     }
 
-    const interval = setInterval(draw, 33);
+    const interval = setInterval(draw, 33); // ~30fps
 
-    // Stop after 3 seconds, hide canvas, show Q1
+    // Stop after 3 seconds and show first question
     setTimeout(() => {
         clearInterval(interval);
         canvas.style.display = "none";
