@@ -105,5 +105,5 @@ function startConfetti(){
 
 // START MATRIX INTRO ON PAGE LOAD
 window.onload = () => {
-    startMatrixIntro(10000); // 10 sec intro
+    startMatrixIntro(50000); // 50 sec intro
 }
