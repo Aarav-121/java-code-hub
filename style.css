@@ -1,96 +1,66 @@
-/* BODY */
 body {
     margin: 0;
-    background: #000; /* PURE BLACK */
+    background: black;
     color: white;
     font-family: Arial, sans-serif;
     overflow-x: hidden;
-    overflow-y: auto;
-    height: 100%;
 }
 
-/* APP */
+/* Matrix canvas */
+#matrix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* allows clicking through it */
+    z-index: 0; /* BEHIND the app */
+}
+
+/* App container */
 .app {
+    position: relative;
+    z-index: 1; /* IN FRONT of matrix */
     max-width: 400px;
     margin: auto;
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
 }
 
-/* HEADER */
-.header {
-    text-align: center;
-    padding: 15px;
-    border-bottom: 1px solid #222;
-    font-size: 20px;
-}
-
-/* SCREENS */
+/* Screens */
 .screen {
     display: none;
-    flex-direction: column;
+    flex: 1;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     text-align: center;
     padding: 20px;
-    min-height: 100vh;
-    box-sizing: border-box;
 }
 
 .screen.active {
     display: flex;
 }
 
-/* BUTTONS */
+/* Buttons & Inputs */
 button {
-    margin: 10px auto;
-    padding: 14px 20px;
+    margin: 10px;
+    padding: 12px 20px;
     border-radius: 10px;
     border: none;
     background: #00ffcc;
     color: black;
     font-size: 16px;
-    width: 80%;
-    max-width: 300px;
     cursor: pointer;
 }
 
-/* INPUT */
 input {
-    padding: 12px;
+    padding: 10px;
     border-radius: 8px;
     border: none;
     margin: 10px auto;
     width: 80%;
     max-width: 300px;
     display: block;
-}
-
-/* CHECKBOXES */
-label {
-    display: block;
-    margin: 5px 0;
-}
-
-/* MATRIX CANVAS */
-#matrix {
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-}
-
-/* CONFETTI */
-#confetti {
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-    display:none;
 }
