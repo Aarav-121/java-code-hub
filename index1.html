@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cute Pop Quiz with Confetti 💖</title>
+<style>
+  body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: #ffe6f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .container {
+    background: #fff0f5;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    text-align: center;
+    max-width: 450px;
+    position: relative;
+    overflow: hidden;
+  }
+  h1 { color: #ff3399; }
+  button {
+    background: #ff66b3;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin: 10px 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.2s;
+  }
+  button:hover { transform: scale(1.1); background: #ff3399; }
+  .hidden { display: none; }
+  .emoji-pop {
+    position: absolute;
+    font-size: 30px;
+    animation: pop 1s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes pop {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    50% { transform: translateY(-50px) scale(1.5); }
+    100% { opacity: 0; transform: translateY(-100px) scale(0.5); }
+  }
+  canvas { position: fixed; top: 0; left: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Cute Pop Quiz 💖</h1>
+  <p id="question">Ready for a fun little quiz? 😄</p>
+  <div id="options">
+    <button onclick="nextQuestion('yes')">Yes! 🎉</button>
+    <button onclick="nextQuestion('no')">Maybe later 😅</button>
+  </div>
+  <p id="score" class="hidden"></p>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+const quiz = [
+  { question: "What's your favorite ice cream flavor? 🍦", options: ["Chocolate","Strawberry","Vanilla","Mint"], answer:"Chocolate", emoji:"🍫" },
+  { question: "Where would you rather go on a random adventure? 🏖️", options: ["Beach","Mountains","City","Amusement Park"], answer:"Beach", emoji:"🏖️" },
+  { question: "Pick a cute pet you'd love 🐶🐱", options: ["Dog","Cat","Hamster","Parrot"], answer:"Cat", emoji:"🐱" },
+  { question: "Your go-to comfort food? 🍕", options: ["Pizza","Pasta","Chocolate","Burgers"], answer:"Chocolate", emoji:"🍫" }
+];
+
+let current = 0;
+let score = 0;
+
+function nextQuestion(answer) {
+  if(current === 0 && (answer === 'yes' || answer === 'no')) { showQuestion(); return; }
+
+  const q = quiz[current-1];
+  if(answer === q.answer) score++;
+
+  popEmoji(q.emoji);
+  showQuestion();
+}
+
+function showQuestion() {
+  const questionEl = document.getElementById('question');
+  const optionsEl = document.getElementById('options');
+  const scoreEl = document.getElementById('score');
+
+  if(current >= quiz.length) {
+    questionEl.textContent = "All done! 🎉";
+    optionsEl.classList.add('hidden');
+    scoreEl.textContent = `You got ${score} out of ${quiz.length} right! 💖`;
+    scoreEl.classList.remove('hidden');
+    startConfetti();
+
+    if(score === quiz.length) questionEl.textContent += " You really know your stuff! 😍";
+    else if(score > quiz.length / 2) questionEl.textContent += " Not bad! 😊";
+    else questionEl.textContent += " Let's get to know each other more! 😉";
+
+    return;
+  }
+
+  const q = quiz[current];
+  questionEl.textContent = q.question;
+  optionsEl.innerHTML = '';
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.textContent = opt;
+    btn.onclick = () => nextQuestion(opt);
+    optionsEl.appendChild(btn);
+  });
+  current++;
+}
+
+function popEmoji(emoji) {
+  const container = document.querySelector('.container');
+  const span = document.createElement('span');
+  span.textContent = emoji;
+  span.className = 'emoji-pop';
+  span.style.left = Math.random() * 80 + '%';
+  container.appendChild(span);
+  setTimeout(() => container.removeChild(span), 1000);
+}
+
+/* Simple Confetti Effect */
+function startConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const confettiCount = 150;
+  const confetti = [];
+
+  for(let i=0; i<confettiCount; i++){
+    confetti.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height - canvas.height,
+      r: Math.random()*6+4,
+      d: Math.random()*confettiCount,
+      color: `hsl(${Math.random()*360},100%,50%)`,
+      tilt: Math.random()*10-10,
+      tiltAngleIncremental: Math.random()*0.07+0.05
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confetti.forEach(c => {
+      ctx.beginPath();
+      ctx.lineWidth = c.r/2;
+      ctx.strokeStyle = c.color;
+      ctx.moveTo(c.x+c.tilt+ c.r/4, c.y);
+      ctx.lineTo(c.x+c.tilt, c.y+c.tilt+c.r/4);
+      ctx.stroke();
+    });
+    update();
+    requestAnimationFrame(draw);
+  }
+
+  function update() {
+    confetti.forEach((c, i) => {
+      c.tiltAngle += c.tiltAngleIncremental;
+      c.y += (Math.cos(c.d) + 3 + c.r/2)/2;
+      c.x += Math.sin(c.d);
+      c.tilt = Math.sin(c.tiltAngle) * 15;
+
+      if(c.y > canvas.height) {
+        confetti[i] = { x: Math.random()*canvas.width, y: -10, r: c.r, d: c.d, color:c.color, tilt: c.tilt, tiltAngleIncremental: c.tiltAngleIncremental, tiltAngle: 0};
+      }
+    });
+  }
+
+  draw();
+}
+</script>
+</body>
+</html>
