@@ -19,11 +19,17 @@ function saveAns(key, value, next) {
 
 // SAVE INPUT
 function saveInput(id, next) {
-    data[id] = document.getElementById(id).value;
-    data[id]=value;
+    let value = document.getElementById(id).value;
+
+    if (!value) {
+        alert("Please enter something 😊");
+        return;
+    }
+
+    data[id] = value;
     showScreen(next);
-    
 }
+
 
 // SUBMIT
 function submitData() {
