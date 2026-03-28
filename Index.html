@@ -51,21 +51,26 @@
         </datalist>
         <button onclick="saveInput('relation','q4')">Next</button>
     </div>
-      <div class="screen" id="q3">
-    <h2>What am I to you?</h2>
-    <input id="relation" list="suggestions" placeholder="Choose or type..." required>
-    <datalist id="suggestions">
-      <option value="Friend">
-      <option value="Best Friend">
-      <option value="Brother/Sister">
-      <option value="Crush">
-      <option value="Lover">
-      <option value="Special Person">
-      <option value="Family">
-      <option value="Just Someone">
-    </datalist>
-    <button onclick="saveInput('relation','q4')">Next</button>
-  </div>
+   
+    <!-- Q4 -->
+    <div class="screen" id="q4">
+        <h2>Do I make your day better?</h2>
+        <button onclick="saveAns('day','Yes','q5')">Yes</button>
+        <button onclick="saveAns('day','No','q5')">No</button>
+    </div>
+
+    <!-- Q5: Expectations -->
+    <div class="screen" id="q5">
+        <h2>What do you expect from me?</h2>
+        <label><input type="checkbox" value="Love"> Love</label>
+        <label><input type="checkbox" value="Care"> Care</label>
+        <label><input type="checkbox" value="Trust"> Trust</label>
+        <label><input type="checkbox" value="Honesty"> Honesty</label>
+        <label><input type="checkbox" value="Time"> Time</label>
+        <label><input type="checkbox" value="Respect"> Respect</label>
+        <button onclick="submitData()">Submit</button>
+    </div>
+
 
 
     <!-- THANK YOU SCREEN -->
