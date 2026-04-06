@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confetti Heart</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at top, #3b1b5c 0%, #120517 70%);
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        .heart {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            background: #ff3860;
+            transform: rotate(-45deg);
+            animation: beat 0.8s ease-in-out infinite;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: #ff3860;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -35px;
+            left: 0;
+        }
+
+        .heart::after {
+            top: 0;
+            left: 35px;
+        }
+
+        .confetti {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .confetti span {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            border-radius: 3px;
+            animation: fall 3s linear infinite, twinkle 1.5s ease-in-out infinite;
+        }
+
+        .confetti span:nth-child(1)  { left: 8%;  background: #ffdd57; animation-delay: 0.1s; }
+        .confetti span:nth-child(2)  { left: 18%; background: #4ade80; animation-delay: 0.3s; }
+        .confetti span:nth-child(3)  { left: 26%; background: #60a5fa; animation-delay: 0.5s; }
+        .confetti span:nth-child(4)  { left: 34%; background: #fb7185; animation-delay: 0.2s; }
+        .confetti span:nth-child(5)  { left: 43%; background: #f59e0b; animation-delay: 0.4s; }
+        .confetti span:nth-child(6)  { left: 52%; background: #38bdf8; animation-delay: 0.6s; }
+        .confetti span:nth-child(7)  { left: 61%; background: #a78bfa; animation-delay: 0.1s; }
+        .confetti span:nth-child(8)  { left: 70%; background: #f472b6; animation-delay: 0.35s; }
+        .confetti span:nth-child(9)  { left: 79%; background: #fde68a; animation-delay: 0.55s; }
+        .confetti span:nth-child(10) { left: 88%; background: #34d399; animation-delay: 0.25s; }
+        .confetti span:nth-child(11) { left: 14%; background: #38bdf8; animation-delay: 0.8s; }
+        .confetti span:nth-child(12) { left: 30%; background: #f97316; animation-delay: 0.9s; }
+
+        @keyframes beat {
+            0%, 100% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.2); }
+        }
+
+        @keyframes fall {
+            0%   { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10%  { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart"></div>
+    <div class="confetti">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+</body>
+</html>
