@@ -1,172 +1,198 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Fun Quiz with Leaderboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <style>
-    body { text-align:center; font-family:Arial; background:#ffe6f0; }
-    button { display:block; margin:10px auto; padding:10px; background:#ff99cc; border:none; cursor:pointer; }
-    #nextBtn { background:#ff4da6; color:white; }
-    #timer { font-size:18px; margin-top:10px; }
-    input { padding:8px; font-size:16px; margin:10px; }
-    a { color:#ff4da6; text-decoration:none; font-weight:bold; }
-    a:hover { text-decoration:underline; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cute Pop Quiz with Confetti 💖</title>
+<style>
+  body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: #ffe6f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .container {
+    background: #fff0f5;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    text-align: center;
+    max-width: 450px;
+    position: relative;
+    overflow: hidden;
+  }
+  h1 { color: #ff3399; }
+  button {
+    background: #ff66b3;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin: 10px 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.2s;
+  }
+  button:hover { transform: scale(1.1); background: #ff3399; }
+  .hidden { display: none; }
+  .emoji-pop {
+    position: absolute;
+    font-size: 30px;
+    animation: pop 1s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes pop {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    50% { transform: translateY(-50px) scale(1.5); }
+    100% { opacity: 0; transform: translateY(-100px) scale(0.5); }
+  }
+  canvas { position: fixed; top: 0; left: 0; pointer-events: none; }
+</style>
 </head>
 <body>
 
-  <h1 style="color:#ff4da6;">💗 Fun Quiz 💗</h1>
-
-  <!-- Start Screen -->
-  <div id="startScreen">
-    <p>Please enter your name to start the quiz:</p>
-    <input type="text" id="playerName" placeholder="Your Name"/>
-    <button onclick="startQuiz()">Start Quiz</button>
+<div class="container">
+  <h1>Cute Pop Quiz 💖</h1>
+  <p id="question">Ready for a fun little quiz? 😄</p>
+  <div id="options">
+    <button onclick="nextQuestion('yes')">Yes! 🎉</button>
+    <button onclick="nextQuestion('no')">Maybe later 😅</button>
   </div>
+  <p id="score" class="hidden"></p>
+</div>
 
-  <!-- Quiz Screen (hidden until name entered) -->
-  <div id="quizScreen" style="display:none;">
-    <div id="timer"></div>
-    <h2 id="question">Question here</h2>
-    <div id="buttons"></div>
-    <p id="result" style="font-size:20px;"></p>
-    <p id="score" style="font-size:18px;"></p>
-    <button id="nextBtn" onclick="nextQuestion()">Next</button>
-  </div>
+<canvas id="confetti"></canvas>
 
-  <script>
-    let current = 0;
-    let score = 0;
-    let timer;
-    let timeLeft = 15;
-    let player = "";
+<script>
+const quiz = [
+  { question: "What's your favorite ice cream flavor? 🍦", options: ["Chocolate","Strawberry","Vanilla","Mint"], answer:"Chocolate", emoji:"🍫" },
+  { question: "Yours comfort place? 🏖️", options: ["Beach","Mountains","Home Alone","Amusement Park"], answer: "Home Alone", emoji:"🏡" },
+  { question: "Pick a cute pet you'd love 🐶🐱", options: ["Dog","Cat","Hamster","Goat Baby"], answer:"Cat", emoji: "🐈" },
+  { question: "What's your favorite way to relax? 🛁", options: ["Bubble Bath","Watching Movies","Reading a Book","Listening to Music"], answer:"Listening to Music", emoji:"🎶" },
+  { question: "Choose a cute nickname for you!💖", options: ["sweet pea","cutey","blossom","moon"], answer: "cutey", emoji:"💖" },
+  { question: "which superpower would you choose? 🦸‍♀️", options: ["Invisibility","Mind Reading","Super Strength","Telepathy"], answer:"Mind Reading", emoji:"🧠" },
+  {question: "What desert you like most? 🍰", options: ["Chocolate Cake","Ice Cream","Fudge","Cookies"], answer:"Ice Cream", emoji:"🍨" },
+  { question: "Which season do you love the most? 🌸❄️☀️🍂", options: ["Rainy","Winter","Summer","Autumn"], answer:"Rainy", emoji:"🌧️" },
+  { question: "What's your favorite type of music? 🎵", options: ["Pop","Rock","Classical","Jazz"], answer:"Pop", emoji:"🎤" },
+  { question: "Which animal do you find cutest? 🐶🐱🐰🦊", options: ["Dog","Cat","Rabbit","Fox"], answer:"Rabbit", emoji:"🐇" }
+];
+  
 
-    const questions = [
-      { q: "Capital of India?", correct: "Delhi", options: ["Mumbai", "Delhi", "Chennai"] },
-      { q: "2 + 2 = ?", correct: "4", options: ["3", "4", "5"] },
-      { q: "Which planet is known as the Red Planet?", correct: "Mars", options: ["Earth", "Mars", "Jupiter"] },
-      { q: "What is the largest mammal?", correct: "Blue Whale", options: ["Elephant", "Giraffe", "Blue Whale"] },
-      { q: "Who wrote 'Romeo and Juliet'?", correct: "William Shakespeare", options: ["William Shakespeare", "Charles Dickens", "Jane Austen"] },
-      { q: "What is the chemical symbol for water?", correct: "H2O", options: ["O2", "H2O", "CO2"] },
-      { q: "Which country is known as the Land of the Rising Sun?", correct: "Japan", options: ["China", "Japan", "South Korea"] },
-      { q: "What is the smallest prime number?", correct: "2", options: ["1", "2", "3"] },
-      { q: "Who painted the Mona Lisa?", correct: "Leonardo da Vinci", options: ["Pablo Picasso", "Leonardo da Vinci", "Vincent van Gogh"] },
-      { q: "What is the largest ocean on Earth?", correct: "Pacific Ocean", options: ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean"] },
-      { q: "Which language is primarily spoken in Brazil?", correct: "Portuguese", options: ["Spanish", "Portuguese", "French"] },
-      { q: "What is the currency of Japan?", correct: "Yen", options: ["Dollar", "Euro", "Yen"] }
-    ];
+let current = 0;
+let score = 0;
 
-    const startScreen = document.getElementById("startScreen");
-    const quizScreen = document.getElementById("quizScreen");
-    const questionEl = document.getElementById("question");
-    const buttonsEl = document.getElementById("buttons");
-    const scoreEl = document.getElementById("score");
-    const resultEl = document.getElementById("result");
-    const timerEl = document.getElementById("timer");
+function nextQuestion(answer) {
+  if(current === 0 && (answer === 'yes' || answer === 'no')) { showQuestion(); return; }
 
-    function startQuiz() {
-      const nameInput = document.getElementById("playerName").value.trim();
-      if(nameInput === "") { alert("Please enter your name!"); return; }
-      player = nameInput;
-      startScreen.style.display = "none";
-      quizScreen.style.display = "block";
-      loadQuestion();
-    }
+  const q = quiz[current-1];
+  if(answer === q.answer) score++;
 
-    function startTimer() {
-      timeLeft = 15;
-      timerEl.innerText = `⏱️ Time left: ${timeLeft}s`;
-      clearInterval(timer);
-      timer = setInterval(() => {
-        timeLeft--;
-        timerEl.innerText = `⏱️ Time left: ${timeLeft}s`;
-        if(timeLeft <= 0) { clearInterval(timer); checkAnswer(null); }
-      }, 1000);
-    }
+  popEmoji(q.emoji);
+  showQuestion();
+}
 
-    function loadQuestion() {
-      let q = questions[current];
-      questionEl.innerText = q.q;
-      buttonsEl.innerHTML = "";
-      resultEl.innerText = "";
-      startTimer();
+function showQuestion() {
+  const questionEl = document.getElementById('question');
+  const optionsEl = document.getElementById('options');
+  const scoreEl = document.getElementById('score');
 
-      q.options.forEach(opt => {
-        let btn = document.createElement("button");
-        btn.innerText = opt;
-        btn.onclick = () => checkAnswer(opt);
-        buttonsEl.appendChild(btn);
-      });
-    }
+  if(current >= quiz.length) {
+    questionEl.textContent = "All done! 🎉";
+    optionsEl.classList.remove('hidden');
+    scoreEl.textContent = `You got ${score} out of ${quiz.length} right! 💖`;
+    scoreEl.classList.remove('hidden');
+    startConfetti();
 
-    function checkAnswer(answer) {
-      clearInterval(timer);
-      let correct = questions[current].correct;
-      let buttons = document.querySelectorAll("#buttons button");
-      buttons.forEach(btn => btn.disabled = true);
+    if(score === quiz.length) questionEl.textContent += " You really know your stuff! 😍";
+    else if(score > quiz.length / 2) questionEl.textContent += " Not bad! 😊";
+    else questionEl.textContent += " Let's get to know each other more! 😉";
+    optionsEl.innerHTML = `
+          <div style="margin-top:30px;">
+              <ul style="list-style:none; padding:0;">
+                <li><a href="fun.html" target="_blank" rel="noopener noreferrer">Click Here💗</a></li>
+            </ul>
+          </div>`;
+    return;
+  }
 
-      if(answer === correct) { resultEl.innerText = "✅ Correct!"; score++; }
-      else { resultEl.innerText = `❌ Wrong! Correct: ${correct}`; }
+  const q = quiz[current];
+  questionEl.textContent = q.question;
+  optionsEl.innerHTML = '';
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.textContent = opt;
+    btn.onclick = () => nextQuestion(opt);
+    optionsEl.appendChild(btn);
+  });
+  current++;
+}
 
-      scoreEl.innerText = `Score: ${score}`;
-    }
+function popEmoji(emoji) {
+  const container = document.querySelector('.container');
+  const span = document.createElement('span');
+  span.textContent = emoji;
+  span.className = 'emoji-pop';
+  span.style.left = Math.random() * 80 + '%';
+  container.appendChild(span);
+  setTimeout(() => container.removeChild(span), 1000);
+}
 
-    function nextQuestion() {
-      current++;
-      if(current >= questions.length) showFinal();
-      else loadQuestion();
-    }
+/* Simple Confetti Effect */
+function startConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-    function getRank(score, total) {
-      let percent = (score / total) * 100;
-      if(percent === 100) return "🏆 Genius";
-      if(percent >= 80) return "🥇 Pro";
-      if(percent >= 60) return "🥈 Smart";
-      if(percent >= 40) return "🥉 Beginner";
-      return "😅 Try Again";
-    }
+  const confettiCount = 150;
+  const confetti = [];
 
-    function updateLeaderboard(name, score) {
-      let leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
-      leaderboard.push({ name, score });
-      leaderboard.sort((a,b) => b.score - a.score);
-      leaderboard = leaderboard.slice(0,5); // top 5
-      localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
-      return leaderboard;
-    }
+  for(let i=0; i<confettiCount; i++){
+    confetti.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height - canvas.height,
+      r: Math.random()*6+4,
+      d: Math.random()*confettiCount,
+      color: `hsl(${Math.random()*360},100%,50%)`,
+      tilt: Math.random()*10-10,
+      tiltAngleIncremental: Math.random()*0.07+0.05
+    });
+  }
 
-    function showFinal() {
-      clearInterval(timer);
-      let rank = getRank(score, questions.length);
-      let top5 = updateLeaderboard(player, score);
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confetti.forEach(c => {
+      ctx.beginPath();
+      ctx.lineWidth = c.r/2;
+      ctx.strokeStyle = c.color;
+      ctx.moveTo(c.x+c.tilt+ c.r/4, c.y);
+      ctx.lineTo(c.x+c.tilt, c.y+c.tilt+c.r/4);
+      ctx.stroke();
+    });
+    update();
+    requestAnimationFrame(draw);
+  }
 
-      let leaderboardHTML = "<h3>🏆 Leaderboard (Top 5)</h3><ol>";
-      top5.forEach(item => { leaderboardHTML += `<li>${item.name}: ${item.score}</li>`; });
-      leaderboardHTML += "</ol>";
+  function update() {
+    confetti.forEach((c, i) => {
+      c.tiltAngle += c.tiltAngleIncremental;
+      c.y += (Math.cos(c.d) + 3 + c.r/2)/2;
+      c.x += Math.sin(c.d);
+      c.tilt = Math.sin(c.tiltAngle) * 15;
 
-      document.body.innerHTML = `
-        <h1 style="color:#ff4da6;">🎉 Quiz Finished 🎉</h1>
-        <h2>${player}, Your Score: ${score}/${questions.length}</h2>
-        <h2>Your Rank: ${rank}</h2>
-        ${leaderboardHTML}
+      if(c.y > canvas.height) {
+        confetti[i] = { x: Math.random()*canvas.width, y: -10, r: c.r, d: c.d, color:c.color, tilt: c.tilt, tiltAngleIncremental: c.tiltAngleIncremental, tiltAngle: 0};
+      }
+    });
+  }
 
-        <!-- Other Quizzes Section -->
-        <div style="margin-top:30px;">
-          <h3>✨ Check out my other quizzes! ✨</h3>
-          <ul style="list-style:none; padding:0;">
-            <li><a href="quiz1.html" target="_blank">Math Quiz</a></li>
-            <li><a href="quiz2.html" target="_blank">Science Quiz</a></li>
-            <li><a href="quiz3.html" target="_blank">History Quiz</a></li>
-          </ul>
-        </div>
-
-        <button onclick="location.reload()" style="padding:10px; background:#ff4da6; color:white; border:none; margin-top:20px;">Restart</button>
-      `;
-
-      confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
-    }
-
-  </script>
-
+  draw();
+}
+</script>
 </body>
 </html>
